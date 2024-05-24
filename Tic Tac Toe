@@ -1,0 +1,75 @@
+import random
+
+def print_board(board):
+    print("  1 2 3")
+    for row in range(3):
+        print(chr(65 + row), end=" ")
+        for col in range(3):
+            print(board[row][col], end=" ")
+        print()
+
+def check_winner(board, player):
+    # Check rows, columns, and diagonals for a win
+    for i in range(3):
+        if all(board[i][j] == player for j in range(3)):
+            return True
+        if all(board[j][i] == player for j in range(3)):
+            return True
+    if all(board[i][i] == player for i in range(3)):
+        return True
+    if all(board[i][2 - i] == player for i in range(3)):
+        return True
+    return False
+
+def check_draw(board):
+    return all(board[row][col] != " " for row in range(3) for col in range(3))
+
+def player_move(board, player):
+    while True:
+        move = input(f"Spēlētājs {player}, ievadi (A1, utt.): ").strip().upper()
+        if len(move) == 2 and move[0] in "ABC" and move[1] in "123":
+            row = ord(move[0]) - ord('A')
+            col = int(move[1]) - 1
+            if board[row][col] == " ":
+                board[row][col] = player
+                break
+            else:
+                print("Šī vieta jau ir aizņemta. Mēģini vēlreiz.")
+        else:
+            print("Nepareiza ievade. Izmantojiet formātu A1, B2 utt.")
+
+def computer_move(board, player):
+    while True:
+        row = random.randint(0, 2)
+        col = random.randint(0, 2)
+        if board[row][col] == " ":
+            board[row][col] = player
+            print(f"Dators ievada {chr(65 + row)}{col + 1}")
+            break
+
+def main():
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    print("Laipni lūdzam spēlē 'Tic Tac Toe'!")
+    print_board(board)
+
+    while True:
+        player_move(board, "X")
+        print_board(board)
+        if check_winner(board, "X"):
+            print("Spēlētājs X uzvar!")
+            break
+        if check_draw(board):
+            print("Neizšķirts!")
+            break
+
+        computer_move(board, "O")
+        print_board(board)
+        if check_winner(board, "O"):
+            print("Dators uzvar!")
+            break
+        if check_draw(board):
+            print("Neizšķirts!")
+            break
+
+if __name__ == "__main__":
+    main()
